@@ -55,6 +55,9 @@ class Game:
             print "Second Not White"
             return False
 
+        if not self.is_move_valid(position_one):
+            return False
+
         if self.my_color == None:
             self.my_color = self.positions[position_one]
             print "My Color"
@@ -71,6 +74,40 @@ class Game:
                 return True
 
         return False
+
+    def is_move_valid(self, switch_position):
+        white_position = self.find_white()
+        if white_position == 0:
+            if switch_position == 2 or switch_position == 3:
+                return True
+            else:
+                return False
+        elif white_position == 1:
+            if switch_position == 2 or switch_position == 4:
+                return True
+            else:
+                return False
+        elif white_position == 2:
+                return True
+        elif white_position == 3:
+            if switch_position != 1:
+                return True
+            else:
+                return False
+        elif white_position == 4:
+            if switch_position != 0:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+
+    def find_white(self):
+        for position, color in enumerate(self.positions):
+            if is_white(color):
+                return position
+        return -1
 
     def switch_positions(self, position_one, position_two, color=None):
         if color != None and self.my_color == None:

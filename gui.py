@@ -12,7 +12,7 @@ class GUI():
         self.main_frame = Frame(self.window)
         self.main_frame.pack()
 
-        self.game_frame = Frame(self.main_frame)
+        self.game_frame = Frame(self.main_frame, width=400, height=400)
         self.game_frame.pack()
 
         self.action_frame = Frame(self.main_frame)
@@ -21,7 +21,8 @@ class GUI():
         self.chat_frame = Frame(self.main_frame)
         self.chat_frame.pack(side=BOTTOM)
 
-        self.setup_board()
+        self.setup_game_lines()
+        self.setup_game_buttons()
 
         self.setup_action_text_field()
         self.setup_action_button()
@@ -35,26 +36,36 @@ class GUI():
         self.player.setup_gui(self)
         self.window.mainloop()
 
-    def setup_board(self):
+    def setup_game_buttons(self):
         self.left_up_button = Button(self.game_frame, text="",
                                      command=lambda: self.send_button_click(0))
-        self.left_up_button.grid(row=0, column=0)
+        self.left_up_button.place(x = 25, y = 25, height=50, width=50)
 
         self.right_up_button = Button(self.game_frame, text="",
                                       command=lambda: self.send_button_click(1))
-        self.right_up_button.grid(row=0, column=2)
+        self.right_up_button.place(x = 300, y = 25, height=50, width=50)
 
         self.center_button = Button(self.game_frame, text="",
                                     command=lambda: self.send_button_click(2))
-        self.center_button.grid(row=1, column=1)
+        self.center_button.place(x = 162, y = 113, height=50, width=50)
 
         self.left_bottom_button = Button(self.game_frame, text="",
                                          command=lambda: self.send_button_click(3))
-        self.left_bottom_button.grid(row=2, column=0)
+        self.left_bottom_button.place(x = 25, y = 200, height=50, width=50)
 
         self.right_bottom_button = Button(self.game_frame, text="",
                                           command=lambda: self.send_button_click(4))
-        self.right_bottom_button.grid(row=2, column=2)
+        self.right_bottom_button.place(x = 300, y = 200, height=50, width=50)
+
+    def setup_game_lines(self):
+        self.canvas = Canvas(self.game_frame)
+        self.canvas.create_line(75, 75, 300, 200)
+        self.canvas.create_line(300, 75, 75, 200)
+        self.canvas.create_line(50, 50, 50, 225)
+        self.canvas.create_line(325, 50, 325, 225)
+        self.canvas.create_line(50, 225, 325, 225)
+
+        self.canvas.pack()
 
     def setup_action_text_field(self):
         self.action_text_field = Label(self.action_frame, text="Press Start!")
