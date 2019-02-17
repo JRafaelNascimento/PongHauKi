@@ -6,26 +6,63 @@ import tkMessageBox
 class GUI():
     def __init__(self, player):
         self.window = Tk()
-        self.window.title("Pong-Hau-Ki")
+        self.window.title("Jogo das Letras")
         self.player = player
 
         self.main_frame = Frame(self.window)
         self.main_frame.pack()
 
-        self.game_frame = Frame(self.main_frame, width=400, height=400)
-        self.game_frame.pack()
+        self.top_frame = Frame(self.main_frame)
+        self.top_frame.pack()
 
-        self.action_frame = Frame(self.main_frame)
-        self.action_frame.pack()
+        self.oponents_frame = Frame(self.main_frame)
+        self.oponents_frame.pack()
+
+        self.oponents_left_board_frame = Frame(self.oponents_frame)
+        self.oponents_left_board_frame.pack(side=LEFT)
+
+        self.oponents_board_text_field = Label(self.oponents_frame, text="Oponent's Board!", width=20)
+        self.oponents_board_text_field.pack(side=LEFT)
+
+        self.oponents_right_board_frame = Frame(self.oponents_frame)
+        self.oponents_right_board_frame.pack(side=LEFT)
+
+        self.board_frame = Frame(self.main_frame, height=300)
+        self.board_frame.pack()
+
+        self.player_frame = Frame(self.main_frame)
+        self.player_frame.pack()
+
+        self.player_left_board_frame = Frame(self.player_frame)
+        self.player_left_board_frame.pack(side=LEFT)
+
+        self.players_board_text_field = Label(self.player_frame, text="Player's Board!", width=20)
+        self.players_board_text_field.pack(side=LEFT)
+
+        self.player_right_board_frame = Frame(self.player_frame)
+        self.player_right_board_frame.pack(side=LEFT)
+
+        # self.setup_blank_spaces()
+
+        self.bottom_frame = Frame(self.main_frame)
+        self.bottom_frame.pack()
 
         self.chat_frame = Frame(self.main_frame)
         self.chat_frame.pack(side=BOTTOM)
 
-        self.setup_game_lines()
-        self.setup_game_buttons()
-
         self.setup_action_text_field()
+
+        self.setup_left_oponents_board()
+        self.setup_right_oponents_board()
+
+        self.setup_board()
+
+        self.setup_left_player_board()
+        self.setup_right_player_board()
+
+        self.setup_giveup_button()
         self.setup_action_button()
+        self.setup_game_text_field()
 
         self.setup_text_box()
         self.setup_text_field()
@@ -36,45 +73,79 @@ class GUI():
         self.player.setup_gui(self)
         self.window.mainloop()
 
-    def setup_game_buttons(self):
-        self.left_up_button = Button(self.game_frame, text="",
-                                     command=lambda: self.send_button_click(0))
-        self.left_up_button.place(x = 25, y = 25, height=50, width=50)
+    def on_click(self,i,j,event):
+        # global counter
+        # color = "red" if counter%2 else "black"
+        # event.widget.config(bg=color)
+        # counter += 1
+        pass
 
-        self.right_up_button = Button(self.game_frame, text="",
-                                      command=lambda: self.send_button_click(1))
-        self.right_up_button.place(x = 300, y = 25, height=50, width=50)
+    def setup_left_oponents_board(self):
+        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
+        for i,row in enumerate(board):
+            for j,column in enumerate(row):
+                L = Label(self.oponents_left_board_frame, text=" " + column + " ", font=('Default', 15), fg='grey', width=3)
+                L.grid(row=i,column=j)
 
-        self.center_button = Button(self.game_frame, text="",
-                                    command=lambda: self.send_button_click(2))
-        self.center_button.place(x = 162, y = 113, height=50, width=50)
+    def setup_right_oponents_board(self):
+        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
+        for i,row in enumerate(board):
+            for j,column in enumerate(row):
+                L = Label(self.oponents_right_board_frame, text=" " + column + " ", font=('Default', 15), fg='red', width=3)
+                L.grid(row=i,column=j)
 
-        self.left_bottom_button = Button(self.game_frame, text="",
-                                         command=lambda: self.send_button_click(3))
-        self.left_bottom_button.place(x = 25, y = 200, height=50, width=50)
+    def setup_board(self):
+        board = [['a','b','c','d','e','f','g','h','i','j','k','l','m'],['n','o','p','q','r','s','t','u','v','x','y','w','z']]
+        for i,row in enumerate(board):
+            for j,column in enumerate(row):
+                L = Label(self.board_frame, text=" " + column + " ", font=('Default', 15), fg='green', width=3)
+                L.grid(row=i,column=j)
 
-        self.right_bottom_button = Button(self.game_frame, text="",
-                                          command=lambda: self.send_button_click(4))
-        self.right_bottom_button.place(x = 300, y = 200, height=50, width=50)
+    def setup_left_player_board(self):
+        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
+        for i,row in enumerate(board):
+            for j,column in enumerate(row):
+                L = Label(self.player_left_board_frame, text=" " + column + " ", font=('Default', 15), fg='grey', width=3)
+                L.grid(row=i,column=j)
 
-    def setup_game_lines(self):
-        self.canvas = Canvas(self.game_frame)
-        self.canvas.create_line(75, 75, 300, 200)
-        self.canvas.create_line(300, 75, 75, 200)
-        self.canvas.create_line(50, 50, 50, 225)
-        self.canvas.create_line(325, 50, 325, 225)
-        self.canvas.create_line(50, 225, 325, 225)
+    def setup_right_player_board(self):
+        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
+        for i,row in enumerate(board):
+            for j,column in enumerate(row):
+                L = Label(self.player_right_board_frame, text=" " + column + " ", font=('Default', 15), fg='blue', width=3)
+                L.grid(row=i,column=j)
 
-        self.canvas.pack()
+    def setup_blank_spaces(self):
+        self.oponents_canvas = Canvas(self.oponents_frame)
+        self.oponents_canvas.create_line(0, 0, 0, 0)
+
+        self.oponents_canvas.pack()
+
+        self.player_canvas = Canvas(self.player_frame)
+        self.player_canvas.create_line(0, 0, 0, 0)
+
+        self.player_canvas.pack()
 
     def setup_action_text_field(self):
-        self.action_text_field = Label(self.action_frame, text="Press Start!")
-        self.action_text_field.pack(side=TOP)
+        self.action_text_field = Label(self.top_frame, text="Press Start!", font=('Default', 20))
+        self.action_text_field.pack()
 
     def setup_action_button(self):
-        self.action_button = Button(self.action_frame, text="Start",
+        self.action_button = Button(self.bottom_frame, text="START",
                                     command=self.send_action_message)
-        self.action_button.pack(side=BOTTOM)
+        self.action_button.pack(side=RIGHT)
+
+    def setup_giveup_button(self):
+        self.giveup_button = Button(self.bottom_frame, text="Give Up",
+                                    command=self.send_giveup_message)
+        self.giveup_button.pack(side=RIGHT)
+
+    def setup_game_text_field(self):
+        self.text_field = Entry(self.bottom_frame, width=72)
+        self.text_field.focus_set()
+        self.text_field.bind(sequence="<Return>",
+                             func=self.send_game_word_message)
+        self.text_field.pack(side=LEFT)
 
     def setup_send_button(self):
         self.send_button = Button(self.chat_frame, text="Send",
@@ -82,14 +153,14 @@ class GUI():
         self.send_button.pack(side=RIGHT)
 
     def setup_text_field(self):
-        self.text_field = Entry(self.chat_frame, width=80)
+        self.text_field = Entry(self.chat_frame, width=82)
         self.text_field.focus_set()
         self.text_field.bind(sequence="<Return>",
                              func=self.send_chat_message)
         self.text_field.pack(side=LEFT)
 
     def setup_text_box(self):
-        self.text_box = ScrolledText(self.main_frame, height=10, width=100)
+        self.text_box = ScrolledText(self.main_frame, height=10, width=101)
         self.text_box.configure(state='disabled')
         self.text_box.pack(side=TOP)
 
@@ -140,7 +211,14 @@ class GUI():
             self.text_box.configure(state='disabled')
             self.text_box.see(END)
 
+    def send_game_word_message(self, args):
+        pass
+
     def send_action_message(self):
+        self.setup_left_oponents_board()
+        # self.player.action_button_pressed()
+
+    def send_giveup_message(self):
         self.player.action_button_pressed()
 
     def send_button_click(self, button_number):

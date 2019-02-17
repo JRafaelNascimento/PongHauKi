@@ -8,15 +8,21 @@ from game import *
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, address, port):
         self.socket = socket(AF_INET, SOCK_STREAM)
-        self.HOST = 'localhost'
-        self.PORT = 8001
+        self.HOST = address
+        self.PORT = port
         self.conn = Communication(self)
         self.game = Game()
 
     def setup_connection(self):
-        print "Error: setup_connection MUST be overwritten"
+        try:
+            self.socket.connect((self.HOST, self.PORT))
+        except:
+            s = socket(AF_INET, SOCK_STREAM)
+            s.bind((self.HOST, self.PORT))
+            s.listen(1)
+            self.socket, addr = s.accept()
 
     def setup_gui(self, gui):
         self.gui = gui
@@ -96,8 +102,8 @@ class Player:
 
     def reset_game(self):
         self.game.reset_game()
-        self.gui.update_action_button("Start")
-        self.gui.update_game_buttons_color(self.game.positions)
+        # self.gui.update_action_button("Start")
+        # self.gui.update_game_buttons_color(self.game.positions)
         self.first_button = None
         self.second_button = None
         self.is_my_turn = False
