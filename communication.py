@@ -11,11 +11,17 @@ class Communication:
     def chat_command(self):
         return "chat"
 
-    def action_command(self):
-        return "action"
+    def word_command(self):
+        return "word"
 
     def move_command(self):
         return "move"
+
+    def start_command(self):
+        return "giveup"
+
+    def giveup_command(self):
+        return "giveup"
 
     def send_chat_message(self, message):
         self.send_message(self.chat_command(), message)
@@ -23,19 +29,23 @@ class Communication:
     def send_exit_message(self):
         self.send_message(self.exit_command(), "")
 
-    def send_action_message(self):
-        self.send_message(self.action_command(), "")
+    def send_word_message(self, word):
+        self.send_message(self.word_command(), word)
 
-    def send_move_message(self, position_one, position_two, color):
-        s = self.command_separator()
-        join_message = s.join([str(position_one), str(position_two), color])
-        self.send_message(self.move_command(), join_message)
+    def send_move_message(self, quantity):
+        self.send_message(self.move_command(), quantity)
+
+    def send_giveup_message(self, quantity):
+        self.send_message(self.giveup_command(), "")
+
+    def send_start_message(self, quantity):
+        self.send_message(self.giveup_command(), "")
 
     def send_message(self, command, message):
         s = self.command_separator()
         join_message = s.join([command, message])
-        print "Sending Message"
-        print join_message
+        print("Sending Message")
+        print(join_message)
         if self.player.socket.send(join_message) == 0:
             exit()
 
@@ -45,20 +55,21 @@ class Communication:
         msg_type = splitted[0]
         msg_body = splitted[1]
 
-        print "Receiving Message"
-        print splitted
+        print("Receiving Message")
+        print(splitted)
 
         if msg_type == self.exit_command():
             return False
         elif msg_type == self.chat_command():
             self.player.handle_chat_message(msg_body)
-        elif msg_type == self.action_command():
-            self.player.handle_action_message()
+        elif msg_type == self.word_command():
+            self.player.handle_word_message(msg_body)
         elif msg_type == self.move_command():
-            sec_msg_body = splitted[2]
-            thr_msg_body = splitted[3]
-            self.player.handle_move_command(
-                int(msg_body), int(sec_msg_body), thr_msg_body)
+            self.player.handle_move_command(int(msg_body))
+        elif msg_type == self.giveup_command():
+            self.player.handle_giveup_command()
+        elif msg_type == self.start_command():
+            self.player.handle_start_command()
         return True
 
     def receive_message(self):
