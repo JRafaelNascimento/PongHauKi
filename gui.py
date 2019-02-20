@@ -50,14 +50,6 @@ class GUI():
 
         self.setup_action_text_field()
 
-        self.setup_left_oponents_board()
-        self.setup_right_oponents_board()
-
-        self.setup_board()
-
-        self.setup_left_player_board()
-        self.setup_right_player_board()
-
         self.setup_giveup_button()
         self.setup_action_button()
         self.setup_game_text_field()
@@ -71,39 +63,34 @@ class GUI():
         self.player.setup_gui(self)
         self.window.mainloop()
 
-    def setup_left_oponents_board(self):
-        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
-        for i,row in enumerate(board):
+    def update_left_oponents_board(self, board):
+        for i,row in enumerate(board.letters):
             for j,column in enumerate(row):
-                L = Label(self.oponents_left_board_frame, text=" " + column + " ", font=('Default', 15), fg='grey', width=3)
+                L = Label(self.oponents_left_board_frame, text=" " + column.letter + " ", font=('Default', 15), fg=column.color, width=3)
                 L.grid(row=i,column=j)
 
-    def setup_right_oponents_board(self):
-        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
-        for i,row in enumerate(board):
+    def update_right_oponents_board(self, board):
+        for i,row in enumerate(board.letters):
             for j,column in enumerate(row):
-                L = Label(self.oponents_right_board_frame, text=" " + column + " ", font=('Default', 15), fg='red', width=3)
+                L = Label(self.oponents_right_board_frame, text=" " + column.letter + " ", font=('Default', 15), fg=column.color, width=3)
                 L.grid(row=i,column=j)
 
-    def setup_board(self):
-        board = [['a','b','c','d','e','f','g','h','i','j','k','l','m'],['n','o','p','q','r','s','t','u','v','x','y','w','z']]
-        for i,row in enumerate(board):
+    def update_board(self, board):
+        for i,row in enumerate(board.letters):
             for j,column in enumerate(row):
-                L = Label(self.board_frame, text=" " + column + " ", font=('Default', 15), fg='green', width=3)
+                L = Label(self.board_frame, text=" " + column.letter + " ", font=('Default', 15), fg=column.color, width=3)
                 L.grid(row=i,column=j)
 
-    def setup_left_player_board(self):
-        board = [['a','b','c','d','e'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
-        for i,row in enumerate(board):
+    def update_left_player_board(self, board):
+        for i,row in enumerate(board.letters):
             for j,column in enumerate(row):
-                L = Label(self.player_left_board_frame, text=" " + column + " ", font=('Default', 15), fg='grey', width=3)
+                L = Label(self.player_left_board_frame, text=" " + column.letter + " ", font=('Default', 15), fg=column.color, width=3)
                 L.grid(row=i,column=j)
 
-    def setup_right_player_board(self):
-        board = [['a','b','c','d','e'],['f','g','h','i','j'],['k','l','m','n','o'],['p','q','r','s','t'],['u','v','x','y','w','z']]
-        for i,row in enumerate(board):
+    def update_right_player_board(self, board):
+        for i,row in enumerate(board.letters):
             for j,column in enumerate(row):
-                L = Label(self.player_right_board_frame, text=" " + column + " ", font=('Default', 15), fg='blue', width=3)
+                L = Label(self.player_right_board_frame, text=" " + column.letter + " ", font=('Default', 15), fg=column.color, width=3)
                 L.grid(row=i,column=j)
 
     def setup_action_text_field(self):

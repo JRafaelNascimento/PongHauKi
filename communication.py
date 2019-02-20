@@ -18,7 +18,7 @@ class Communication:
         return "move"
 
     def start_command(self):
-        return "giveup"
+        return "start"
 
     def giveup_command(self):
         return "giveup"
@@ -35,11 +35,11 @@ class Communication:
     def send_move_message(self, quantity):
         self.send_message(self.move_command(), quantity)
 
-    def send_giveup_message(self, quantity):
+    def send_giveup_message(self):
         self.send_message(self.giveup_command(), "")
 
-    def send_start_message(self, quantity):
-        self.send_message(self.giveup_command(), "")
+    def send_start_message(self):
+        self.send_message(self.start_command(), "")
 
     def send_message(self, command, message):
         s = self.command_separator()
