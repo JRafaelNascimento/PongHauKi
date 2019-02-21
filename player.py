@@ -37,11 +37,11 @@ class Player:
                 number = self.game.roll_dice()
                 self.gui.update_board(self.game.main_board)
                 self.gui.update_action_button("SEND")
-                self.gui.update_action_text_field("Rolled for: " + number +". Now write the word starting with " + message[0].upper())
+                self.gui.update_action_text_field("Rolled for: " + str(number) +". Now write the word starting with " + self.game.get_player_position_letter())
                 self.its_roll_time = False
                 self.conn.send_move_message(number)
             else:
-                if self.game.validate_word(message):
+                if message != '' and self.game.validate_word(message):
                     if self.game.is_over():
                         self.gui.update_action_text_field("You WON!!! Press Start to Play Again!")
                         self.reset_game()
@@ -78,10 +78,10 @@ class Player:
     def handle_word_message(self, word):
         msg = "Oponent's word is: " + word
         if self.game.handle_word(word):
-            msg.append(". You lost! Press start to play!")
+            msg += ". You lost! Press start to play!"
             self.reset_game()
         else:
-            msg.append(". Roll Dice to Play!")
+            msg += ". Roll Dice to Play!"
             self.gui.update_action_button("ROLL")
             self.gui.update_left_player_board(self.game.left_player_board)
             self.gui.update_right_player_board(self.game.right_player_board)
@@ -91,9 +91,9 @@ class Player:
         self.gui.update_action_text_field(msg)
 
     def handle_move_command(self, quantity):
-        self.gui.update_action_text_field("Oponent rolled dice for: " + quantity)
+        self.gui.update_action_text_field("Oponent rolled dice for: " + str(quantity))
         self.game.move_oponent(quantity)
-        self.gui.update_main_boards(self.game.main_board)
+        self.gui.update_board(self.game.main_board)
 
     def handle_giveup_command(self):
         self.gui.update_action_text_field("You WON!!! Press Start to Play Again!")

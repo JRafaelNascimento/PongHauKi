@@ -33,7 +33,7 @@ class Communication:
         self.send_message(self.word_command(), word)
 
     def send_move_message(self, quantity):
-        self.send_message(self.move_command(), quantity)
+        self.send_message(self.move_command(), str(quantity))
 
     def send_giveup_message(self):
         self.send_message(self.giveup_command(), "")
