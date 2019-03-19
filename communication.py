@@ -1,6 +1,40 @@
+import rpyc
+import time
+from rpyc.utils.server import ThreadedServer
+
+
+class Server(rpyc.Service):
+
+    def exposed_login(self, callback):
+        print("Received login")
+        self.conn.server = callback
+
+    def exposed_message(self, text):
+        self.conn.handle_message(text)
+
+    def set_communication(self, conn):
+        self.conn = conn
+
+
 class Communication:
+
     def __init__(self, player):
         self.player = player
+        self.server = None
+        self.client = None
+        self.should_run = True
+
+    def start_connection(self):
+        try:
+            self.client = rpyc.connect(self.player.HOST, self.player.PORT)
+            self.client.root.login(self.handle_message)
+            self.main_loop()
+        except:
+            if not self.client:
+                service = Server()
+                service.set_communication(self)
+                server = ThreadedServer(service, port=self.player.PORT)
+                server.start()
 
     def command_separator(self):
         return ";"
@@ -23,6 +57,9 @@ class Communication:
     def giveup_command(self):
         return "giveup"
 
+    def keepalive_command(self):
+        return "keepalive"
+
     def send_chat_message(self, message):
         self.send_message(self.chat_command(), message)
 
@@ -41,12 +78,26 @@ class Communication:
     def send_start_message(self):
         self.send_message(self.start_command(), "")
 
+    def send_keepalive_message(self):
+        self.send_message(self.keepalive_command(), "")
+
     def send_message(self, command, message):
         s = self.command_separator()
         join_message = s.join([command, message])
-        print("Sending Message")
-        print(join_message)
-        if self.player.socket.send(join_message) == 0:
+
+        if command != self.keepalive_command():
+            print("Sending Message")
+            print(join_message)
+
+        try:
+            if self.client:
+                self.client.root.message(join_message)
+            elif self.server:
+                self.server(join_message)
+            else:
+                print("Lack of communication")
+                exit()
+        except:
             exit()
 
     def handle_message(self, msg):
@@ -55,29 +106,25 @@ class Communication:
         msg_type = splitted[0]
         msg_body = splitted[1]
 
-        print("Receiving Message")
-        print(splitted)
+        if msg_type != self.keepalive_command():
+            print("Receiving Message")
+            print(splitted)
 
-        if msg_type == self.exit_command():
-            return False
-        elif msg_type == self.chat_command():
-            self.player.handle_chat_message(msg_body)
-        elif msg_type == self.word_command():
-            self.player.handle_word_message(msg_body)
-        elif msg_type == self.move_command():
-            self.player.handle_move_command(int(msg_body))
-        elif msg_type == self.giveup_command():
-            self.player.handle_giveup_command()
-        elif msg_type == self.start_command():
-            self.player.handle_start_command()
-        return True
+            if msg_type == self.exit_command():
+                self.should_run = False
+                self.player.stop()
+            elif msg_type == self.chat_command():
+                self.player.handle_chat_message(msg_body)
+            elif msg_type == self.word_command():
+                self.player.handle_word_message(msg_body)
+            elif msg_type == self.move_command():
+                self.player.handle_move_command(int(msg_body))
+            elif msg_type == self.giveup_command():
+                self.player.handle_giveup_command()
+            elif msg_type == self.start_command():
+                self.player.handle_start_command()
 
-    def receive_message(self):
-        check = True
-        while check:
-            data = self.player.socket.recv(1024)
-            if data == b'':
-                exit()
-            check = self.handle_message(data)
-        self.player.stop()
-        exit()
+    def main_loop(self):
+        while(self.should_run):
+            time.sleep(0.5)
+            self.send_keepalive_message()

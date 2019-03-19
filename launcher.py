@@ -1,5 +1,3 @@
-from socket import *
-
 from player import *
 from gui import *
 import sys

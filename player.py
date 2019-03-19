@@ -1,4 +1,3 @@
-from socket import *
 import threading
 import time
 
@@ -9,20 +8,10 @@ from game import *
 
 class Player:
     def __init__(self, address, port):
-        self.socket = socket(AF_INET, SOCK_STREAM)
         self.HOST = address
         self.PORT = port
         self.conn = Communication(self)
         self.game = Game()
-
-    def setup_connection(self):
-        try:
-            self.socket.connect((self.HOST, self.PORT))
-        except:
-            s = socket(AF_INET, SOCK_STREAM)
-            s.bind((self.HOST, self.PORT))
-            s.listen(1)
-            self.socket, addr = s.accept()
 
     def setup_gui(self, gui):
         self.gui = gui
@@ -120,12 +109,10 @@ class Player:
         self.is_running = False
 
     def start(self):
-        self.setup_connection()
         t_receive = threading.Thread(
-            target=self.conn.receive_message)
+            target=self.conn.start_connection)
         t_receive.start()
 
     def stop(self):
-        self.socket.close()
         self.gui.window.destroy()
         exit()
